@@ -3,10 +3,22 @@ async function connect() {
     if (global.connection)
         return global.connection.connect();
 
-    const { Pool } = require('pg');
-    const pool = new Pool({
+    const pg = require('pg');
+    pg.defaults.ssl = {
+        rejectUnauthorized: false,
+    }
+    const pool = new pg.Pool({
         connectionString: process.env.DATABASE_URL
     });
+
+    /*const fs = require('fs');
+    const pool = new pg.Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false,
+            ca: fs.readFileSync('./certs/ca-certificate.crt').toString()
+        }
+    });*/
 
     const client = await pool.connect();
 
